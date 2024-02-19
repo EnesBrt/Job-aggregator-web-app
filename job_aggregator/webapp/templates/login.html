@@ -1,0 +1,19 @@
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <form class="form-signin" method="post">
+            {% csrf_token %}
+            <h2 class="form-signin-heading">login</h2>
+            <label for="{{ form.username.id_for_label }}" class="sr-only">Username</label>
+                {{ form.username }}
+                {{ form.username.errors }}
+            <label for="{{ form.password.id_for_label }}" class="sr-only">Password</label>
+                {{ form.password }}
+                {{ form.password.errors }}
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+        </form>
+        <a href="{% url 'signin' %}" >Signin</a>
+    </div>
+{% endblock %}
+

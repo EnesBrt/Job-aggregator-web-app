@@ -1,0 +1,32 @@
+{% block title %}Sign In{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <form class="form-signin" method="post">
+        {% csrf_token %}
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <div>
+            <label for="{{ form.username.id_for_label }}" class="sr-only">Username</label>
+            {{ form.username }}
+            {{ form.username.errors }}
+        </div><br>
+        <div>
+            <label for="{{ form.email.id_for_label }}" class="sr-only">Email</label>
+            {{ form.email }}
+            {{ form.email.errors }}
+        </div><br>
+        <div>
+            <label for="{{ form.password.id_for_label }}" class="sr-only">Password</label>
+            {{ form.password }}
+            {{ form.password.errors }}
+        </div><br>
+        <div>
+            <label for="{{ form.confirm_password.id_for_label }}" class="sr-only">Password Confirm</label>
+            {{ form.confirm_password }}
+            {{ form.confirm_password.errors }}
+        </div><br>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        </form>
+        <a href="{% url 'login' %}" >Login</a>
+    </div>
+ {% endblock %}

@@ -1,0 +1,14 @@
+{% block title %}Activation Failed{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Activation Failed</h2>
+        <p>Votre compte n'a pas pu être activé, vous pouvez a nouveau recevoir un email de confimration.</p>
+        {% if user_id %}
+            <form action="{% url 'resend_activation_email' user_id=user_id %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Renvoyer un email de confimration</button>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}
