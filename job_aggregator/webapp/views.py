@@ -206,3 +206,7 @@ def send_forgotten_passord_email(request):
         email_form = EmailForgottenPasswordForm()
 
     return render(request, "forgotten_password.html", {"form": email_form})
+
+
+def reset_forgotten_password(request, token):
+    pass

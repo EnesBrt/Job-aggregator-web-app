@@ -89,3 +89,36 @@ class EmailForgottenPasswordForm(forms.Form):
             raise forms.ValidationError("Cet email n'existe pas")
 
         return email
+
+
+class ResetForgottenPasswordForm(forms.Form):
+    new_password = forms.CharField(max_length=500, widget=forms.PasswordInput)
+    confirm_new_password = forms.CharField(max_length=500, widget=forms.PasswordInput)
+
+    def clean_new_password(self):
+        cleaned_data = super().clean()
+        new_password = cleaned_data.get("new_password")
+        confirm_new_password = cleaned_data.get("confirm_new_password")
+
+        if new_password != confirm_new_password:
+            raise ValidationError("Les mots de passes ne correspondent pas")
+
+        if len(new_password) < 8:
+            raise forms.ValidationError(
+                "Le mot de passe doit contenir au moins 8 caractères"
+            )
+        # Regex for uppercase, number and special character
+        if not re.search(r"[A-Z]", new_password):
+            raise forms.ValidationError(
+                "Le mot de passe doit contenir au moins une lettre majuscule"
+            )
+        if not re.search(r"[0-9]", new_password):
+            raise forms.ValidationError(
+                "Le mot de passe doit contenir au moins un chiffre"
+            )
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', new_password):
+            raise forms.ValidationError(
+                "Le mot de passe doit contenir au moins un caractère spécial"
+            )
+
+        return new_password
