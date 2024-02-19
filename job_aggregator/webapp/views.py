@@ -1,0 +1,167 @@
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth.models import User
+from .forms import SigninForm, LoginForm
+from .models import EmailVerification
+from django.core.mail import send_mail, EmailMessage
+from django.utils import timezone
+import uuid
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.db import transaction
+import logging
+
+
+# Home view
+def home(request):
+    return render(request, "home.html")
+
+
+# Signin view
+def signin(request):
+    if request.method == "POST":
+        form = SigninForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+
+            # retrieve the email verification token and user
+            email_verification = EmailVerification.objects.get(user=user)
+            # generate a token
+            token = email_verification.token
+
+            # activation url
+            activation_url = request.build_absolute_uri(
+                reverse("account_activation", kwargs={"token": token})
+            )
+
+            # send the email
+            email_subject = "Activation de votre compte"
+            email_body = f"Bonjour {user.username},\n\nCliquez sur le lien suivant pour activer votre compte:\n\n{activation_url}"
+            email = EmailMessage(email_subject, email_body, to=[user.email])
+            email.send()
+
+            return redirect("confirmation_sent")
+    else:
+        form = SigninForm()
+
+    return render(request, "signin.html", {"form": form})
+
+
+# activation confirmation
+logger = logging.getLogger(__name__)
+
+
+def account_activation(request, token):
+    try:
+        email_verification = EmailVerification.objects.get(token=token)
+
+        # Check if the token is expired
+        if email_verification.token_expired:
+            logger.error(f"Token for user {email_verification.user.id} is expired.")
+            return redirect("activation_failed", user_id=email_verification.user.id)
+
+        # Check if account is already verified, if not, activate the user account
+        if not email_verification.verified:
+            user = email_verification.user
+            user.is_active = True
+            user.save()
+
+            # Update the email verification token
+            email_verification.verified = True
+            email_verification.save()
+
+            # Delete the email verification token
+            EmailVerification.objects.filter(user=user).exclude(token=token).delete()
+
+            return redirect("account_activated")
+        else:
+            logger.error(
+                f"Account for user {email_verification.user.id} is already verified."
+            )
+            return redirect("login")
+
+    except EmailVerification.DoesNotExist:
+        logger.error(f"No email verification object found for token {token}.")
+        return redirect("activation_failed_no_id")
+
+
+# resend activation email
+def resend_activation_email(request, user_id):
+    try:
+        # retrieve the user and the email verification token
+        user = User.objects.get(id=user_id)
+        email_verification = EmailVerification.objects.get(user=user)
+
+        # Generate a new token
+        token = uuid.uuid4()
+
+        # Update the token in the EmailVerification object and save it to the database
+        with transaction.atomic():
+            email_verification.token = token
+            email_verification.created_at = timezone.now()
+            email_verification.save()
+            print(f"Saved new token {token} for user {user_id}")
+
+        request.session["user_id"] = user_id
+
+        # build the activation url
+        activation_url = request.build_absolute_uri(
+            reverse(
+                "account_activation",
+                kwargs={"token": email_verification.token},
+            )
+        )
+
+        # send the email
+        email_subject = "Activation de votre compte"
+        email_body = f"Bonjour {user.username},\n\nCliquez sur le lien suivant pour activer votre compte:\n\n{activation_url}"
+        email = EmailMessage(email_subject, email_body, to=[user.email])
+        email.send()
+
+    except User.DoesNotExist:
+        return redirect("activation_failed")
+
+    return redirect("confirmation_sent")
+
+
+def login_view(request):
+    if request.method == "POST":
+        login_form = LoginForm(request.POST)
+
+        if login_form.is_valid():
+            username = login_form.cleaned_data["username"]
+            password = login_form.cleaned_data["password"]
+            user = authenticate(username=username, password=password)
+
+            # Check if username and password are correct
+            if user is not None:
+                auth_login(request, user)
+                return redirect("job_board")
+            else:
+                return render(request, "login.html", {"error": "Authentication failed"})
+    else:
+        login_form = LoginForm()
+
+    return render(request, "login.html", {"form": login_form})
+
+
+def confirmation_sent(request):
+    return render(request, "confirmation_sent.html")
+
+
+def account_activated(request):
+    return render(request, "account_activated.html")
+
+
+def activation_failed(request, user_id=None):
+    if user_id is None:
+        # If no user_id is passed as a parameter, try to get it from the session
+        user_id = request.session.get("user_id")
+
+    context = {"user_id": user_id}
+    return render(request, "activation_failed.html", context)
+
+
+def job_board(request):
+    return render(request, "job_board.html")
