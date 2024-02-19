@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.models import User
-from .forms import SigninForm, LoginForm
-from .models import EmailVerification
+from .forms import SigninForm, LoginForm, EmailForgottenPasswordForm
+from .models import EmailVerification, ResetForgottenPassword
 from django.core.mail import send_mail, EmailMessage
 from django.utils import timezone
 import uuid
@@ -165,3 +166,43 @@ def activation_failed(request, user_id=None):
 
 def job_board(request):
     return render(request, "job_board.html")
+
+
+def send_forgotten_passord_email(request):
+    if request.method == "POST":
+        email_form = EmailForgottenPasswordForm(request.POST)
+        if email_form.is_valid():
+            # retrieve the user
+            email = email_form.cleaned_data["email"]
+
+            try:
+                user = User.objects.get(email=email)
+
+                # create a reset password token
+                reset_password_email, created = (
+                    SendResetPasswordEmail.objects.get_or_create(email=email)
+                )
+
+            except User.DoesNotExist:
+                return redirect("email_not_found")
+
+            # generate a token
+            token = reset_password_email.token
+
+            # Create activation url
+            reset_password_url = request.build_absolute_uri(
+                reverse("reset_password", kwargs={"token": token})
+            )
+
+            # send the email
+            email_subject = "Réinitialisation de votre mot de passe"
+            email_body = f"Bonjour {user.username},\n\nCliquez sur le lien suivant pour réinitialiser votre mot de passe:\n\n{reset_password_url}"
+            email = EmailMessage(email_subject, email_body, to=[user.email])
+            email.send()
+
+            return redirect("forgotten_password")
+
+    else:
+        email_form = EmailForgottenPasswordForm()
+
+    return render(request, "forgotten_password.html", {"form": email_form})

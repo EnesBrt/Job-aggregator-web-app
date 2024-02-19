@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 import re
 from django.core.exceptions import ValidationError
-from .models import EmailVerification
+from .models import EmailVerification, SendResetPasswordEmail
 from django.contrib.auth import authenticate
 
 
@@ -78,3 +78,14 @@ class SigninForm(forms.ModelForm):
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=900)
     password = forms.CharField(max_length=900, widget=forms.PasswordInput)
+
+
+class EmailForgottenPasswordForm(forms.Form):
+    email = forms.EmailField(max_length=500)
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if not User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Cet email n'existe pas")
+
+        return email
