@@ -29,11 +29,13 @@ def home(request):
 def signin(request):
     if request.method == "POST":
         form = SigninForm(request.POST)
+
         if form.is_valid():
             user = form.save()
 
             # retrieve the email verification token and user
             email_verification = EmailVerification.objects.get(user=user)
+
             # generate a token
             token = email_verification.token
 
@@ -62,6 +64,7 @@ logger = logging.getLogger(__name__)
 # token activation function to activate the user account
 def account_activation(request, token):
     try:
+        # retrieve the email verification token
         email_verification = EmailVerification.objects.get(token=token)
 
         # Check if the token is expired
@@ -189,6 +192,7 @@ def send_forgotten_passord_email(request):
             # retrieve the user
             email = email_form.cleaned_data["email"]
 
+            # Check if the user exists
             try:
                 user = User.objects.get(email=email)
 
