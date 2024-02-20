@@ -80,6 +80,7 @@ class LoginForm(forms.Form):
     password = forms.CharField(max_length=900, widget=forms.PasswordInput)
 
 
+# Send email for forgotten password form
 class EmailForgottenPasswordForm(forms.Form):
     email = forms.EmailField(max_length=500)
 
@@ -91,6 +92,7 @@ class EmailForgottenPasswordForm(forms.Form):
         return email
 
 
+# Reset password form
 class ResetForgottenPasswordForm(forms.Form):
     new_password = forms.CharField(max_length=500, widget=forms.PasswordInput)
     confirm_new_password = forms.CharField(max_length=500, widget=forms.PasswordInput)

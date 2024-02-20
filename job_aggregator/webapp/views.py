@@ -53,6 +53,7 @@ def signin(request):
 logger = logging.getLogger(__name__)
 
 
+# token activation function to activate the user account
 def account_activation(request, token):
     try:
         email_verification = EmailVerification.objects.get(token=token)
@@ -126,6 +127,7 @@ def resend_activation_email(request, user_id):
     return redirect("confirmation_sent")
 
 
+# Login view
 def login_view(request):
     if request.method == "POST":
         login_form = LoginForm(request.POST)
@@ -147,14 +149,17 @@ def login_view(request):
     return render(request, "login.html", {"form": login_form})
 
 
+# Confirmation sent view
 def confirmation_sent(request):
     return render(request, "confirmation_sent.html")
 
 
+# Account activated view
 def account_activated(request):
     return render(request, "account_activated.html")
 
 
+# Activation failed view
 def activation_failed(request, user_id=None):
     if user_id is None:
         # If no user_id is passed as a parameter, try to get it from the session
@@ -164,10 +169,12 @@ def activation_failed(request, user_id=None):
     return render(request, "activation_failed.html", context)
 
 
+# Job board view
 def job_board(request):
     return render(request, "job_board.html")
 
 
+# Send reset password view
 def send_forgotten_passord_email(request):
     if request.method == "POST":
         email_form = EmailForgottenPasswordForm(request.POST)
@@ -201,7 +208,7 @@ def send_forgotten_passord_email(request):
             email = EmailMessage(email_subject, email_body, to=[user.email])
             email.send()
 
-            return redirect("forgott_password")
+            return redirect("forgot_password")
 
     else:
         email_form = EmailForgottenPasswordForm()
@@ -209,6 +216,7 @@ def send_forgotten_passord_email(request):
     return render(request, "send_email_forgot_password.html", {"form": email_form})
 
 
+# Reset password view
 def reset_forgotten_password(request, token):
     # retrieve the reset password token
     try:
@@ -248,9 +256,11 @@ def reset_forgotten_password(request, token):
             return redirect("login")
 
         else:
-            return render(request, "reset_password.html", {"form": reset_password_form})
+            return render(
+                request, "forgot_password.html", {"form": reset_password_form}
+            )
 
     else:
         reset_password_form = ResetForgottenPasswordForm()
 
-    return render(request, "reset_password.html", {"form": reset_password_form})
+    return render(request, "forgot_password.html", {"form": reset_password_form})
