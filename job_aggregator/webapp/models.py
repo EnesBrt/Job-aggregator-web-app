@@ -7,6 +7,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 
+# Email verification model
 class EmailVerification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
@@ -19,6 +20,7 @@ class EmailVerification(models.Model):
         return self.created_at < timezone.now() - expiration_duration
 
 
+# Send reset password email model
 class ResetForgottenPassword(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
