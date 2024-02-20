@@ -27,7 +27,5 @@ class ResetForgottenPassword(models.Model):
 
     @property
     def token_expired(self):
-        expiration_duration = timedelta(
-            minutes=30
-        )  # Use timedelta to define the expiration duration
+        expiration_duration = timedelta(minutes=30)
         return self.created_at < timezone.now() - expiration_duration

@@ -201,12 +201,12 @@ def send_forgotten_passord_email(request):
             email = EmailMessage(email_subject, email_body, to=[user.email])
             email.send()
 
-            return redirect("forgotten_password")
+            return redirect("forgott_password")
 
     else:
         email_form = EmailForgottenPasswordForm()
 
-    return render(request, "forgotten_password.html", {"form": email_form})
+    return render(request, "send_email_forgot_password.html", {"form": email_form})
 
 
 def reset_forgotten_password(request, token):

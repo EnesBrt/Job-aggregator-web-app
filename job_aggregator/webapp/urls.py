@@ -20,7 +20,11 @@ urlpatterns = [
         views.resend_activation_email,
         name="resend_activation_email",
     ),
-    path("send_reset_password/", views.send_reset_password, name="send_reset_password"),
+    path(
+        "send_email_forgot_password/",
+        views.send_reset_password,
+        name="send_reset_password",
+    ),
     path(
         "reset_password/<uuid:token>/",
         views.reset_password,
