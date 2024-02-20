@@ -14,7 +14,9 @@ urlpatterns = [
         name="activation_failed",
     ),
     path("job_board/", views.job_board, name="job_board"),
-    path("activate/<uuid:token>/", views.account_activation, name="account_activation"),
+    path(
+        "activate/<uuid:token>/", views.account_activation, name="account_activation"
+    ),  # <uuid:token> is the token that will be passed to the view function as an argument
     path(
         "resend_activation_email/<int:user_id>/",
         views.resend_activation_email,
@@ -26,9 +28,9 @@ urlpatterns = [
         name="send_email_forgot_password",
     ),
     path(
-        "reset_password/<uuid:token>/",
+        "forgot_password/<str:token>//",
         views.reset_forgotten_password,
-        name="reset_password",
-    ),
+        name="forgot_password",
+    ),  # <str:token> is the token that will be passed to the view function as an argument
     path("forgot_password/", views.reset_forgotten_password, name="forgot_password"),
 ]

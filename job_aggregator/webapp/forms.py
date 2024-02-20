@@ -1,9 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
-import re
 from django.core.exceptions import ValidationError
 from .models import EmailVerification
 from django.contrib.auth import authenticate
+import re
 
 
 # Signin form
@@ -98,12 +98,7 @@ class ResetForgottenPasswordForm(forms.Form):
     confirm_new_password = forms.CharField(max_length=500, widget=forms.PasswordInput)
 
     def clean_new_password(self):
-        cleaned_data = super().clean()
-        new_password = cleaned_data.get("new_password")
-        confirm_new_password = cleaned_data.get("confirm_new_password")
-
-        if new_password != confirm_new_password:
-            raise ValidationError("Les mots de passes ne correspondent pas")
+        new_password = self.cleaned_data.get("new_password")
 
         if len(new_password) < 8:
             raise forms.ValidationError(
@@ -124,3 +119,11 @@ class ResetForgottenPasswordForm(forms.Form):
             )
 
         return new_password
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_password = self.cleaned_data.get("new_password")
+        confirm_new_password = self.cleaned_data.get("confirm_new_password")
+
+        if new_password != confirm_new_password:
+            raise ValidationError("Les mots de passes ne correspondent pas")

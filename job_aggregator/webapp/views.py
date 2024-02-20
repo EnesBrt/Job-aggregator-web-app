@@ -17,6 +17,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.db import transaction
 import logging
+from django.contrib.auth.tokens import default_token_generator
 
 
 # Home view
@@ -191,12 +192,16 @@ def send_forgotten_passord_email(request):
             try:
                 user = User.objects.get(email=email)
 
-                # create a reset password token
+                # create a reset password token and save it to the database or update it if it already exists
                 reset_password_email, created = (
-                    SendResetPasswordEmail.objects.get_or_create(email=email)
+                    ResetForgottenPassword.objects.update_or_create(
+                        user=user,
+                        defaults={"token": default_token_generator.make_token(user)},
+                    )
                 )
 
             except User.DoesNotExist:
+                print("User does not exist")
                 return redirect("send_email_forgot_password")
 
             # generate a token
@@ -204,7 +209,7 @@ def send_forgotten_passord_email(request):
 
             # Create activation url
             reset_password_url = request.build_absolute_uri(
-                reverse("reset_forgotten_password", kwargs={"token": token})
+                reverse("forgot_password", kwargs={"token": reset_password_email.token})
             )
 
             # send the email
@@ -213,7 +218,7 @@ def send_forgotten_passord_email(request):
             email = EmailMessage(email_subject, email_body, to=[user.email])
             email.send()
 
-            return redirect("forgot_password")
+            return redirect("login")
 
     else:
         email_form = EmailForgottenPasswordForm()
@@ -229,9 +234,11 @@ def reset_forgotten_password(request, token):
 
         # Check if the token is expired
         if reset_password_email.token_expired:
+            print("Token is expired")
             return redirect("send_email_forgot_password")
 
     except ResetForgottenPassword.DoesNotExist:
+        print("Token does not exist")
         return redirect("send_email_forgot_password")
 
     if request.method == "POST":
@@ -240,6 +247,7 @@ def reset_forgotten_password(request, token):
         # If the form data is valid, verify the token, delete any other tokens associated with the user,
         # update the user's password, and redirect to the "login" page.
         if reset_password_form.is_valid():
+            print("Form is valid")
 
             # Check if the token is verified
             if not reset_password_email.verified:
@@ -261,6 +269,7 @@ def reset_forgotten_password(request, token):
             return redirect("login")
 
         else:
+            print("Form is not valid")
             return render(
                 request, "forgot_password.html", {"form": reset_password_form}
             )
