@@ -171,6 +171,7 @@ def job_board(request):
 def send_forgotten_passord_email(request):
     if request.method == "POST":
         email_form = EmailForgottenPasswordForm(request.POST)
+
         if email_form.is_valid():
             # retrieve the user
             email = email_form.cleaned_data["email"]
@@ -209,4 +210,47 @@ def send_forgotten_passord_email(request):
 
 
 def reset_forgotten_password(request, token):
-    pass
+    # retrieve the reset password token
+    try:
+        reset_password_email = ResetForgottenPassword.objects.get(token=token)
+
+        # Check if the token is expired
+        if reset_password_email.token_expired:
+            return redirect("send_reset_password")
+
+    except ResetForgottenPassword.DoesNotExist:
+        return redirect("send_reset_password")
+
+    if request.method == "POST":
+        reset_password_form = ResetForgottenPasswordForm(request.POST)
+
+        # If the form data is valid, verify the token, delete any other tokens associated with the user,
+        # update the user's password, and redirect to the "login" page.
+        if reset_password_form.is_valid():
+
+            # Check if the token is verified
+            if not reset_password_email.verified:
+                reset_password_email.verified = True
+                reset_password_email.save()
+
+            # Delete the reset password token
+            ResetForgottenPassword.objects.filter(
+                user=reset_password_email.user
+            ).exclude(token=token).delete()
+
+            # retrieve the user
+            user = reset_password_email.user
+
+            # update the user password
+            user.set_password(reset_password_form.cleaned_data["new_password"])
+            user.save()
+
+            return redirect("login")
+
+        else:
+            return render(request, "reset_password.html", {"form": reset_password_form})
+
+    else:
+        reset_password_form = ResetForgottenPasswordForm()
+
+    return render(request, "reset_password.html", {"form": reset_password_form})
