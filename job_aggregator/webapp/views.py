@@ -2,7 +2,12 @@ from django.shortcuts import render, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.models import User
-from .forms import SigninForm, LoginForm, EmailForgottenPasswordForm
+from .forms import (
+    SigninForm,
+    LoginForm,
+    EmailForgottenPasswordForm,
+    ResetForgottenPasswordForm,
+)
 from .models import EmailVerification, ResetForgottenPassword
 from django.core.mail import send_mail, EmailMessage
 from django.utils import timezone
