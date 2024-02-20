@@ -204,7 +204,7 @@ def send_forgotten_passord_email(request):
 
             # Create activation url
             reset_password_url = request.build_absolute_uri(
-                reverse("reset_password", kwargs={"token": token})
+                reverse("reset_forgotten_password", kwargs={"token": token})
             )
 
             # send the email
@@ -229,10 +229,10 @@ def reset_forgotten_password(request, token):
 
         # Check if the token is expired
         if reset_password_email.token_expired:
-            return redirect("send_reset_password")
+            return redirect("send_email_forgot_password")
 
     except ResetForgottenPassword.DoesNotExist:
-        return redirect("send_reset_password")
+        return redirect("send_email_forgot_password")
 
     if request.method == "POST":
         reset_password_form = ResetForgottenPasswordForm(request.POST)

@@ -22,12 +22,13 @@ urlpatterns = [
     ),
     path(
         "send_email_forgot_password/",
-        views.send_reset_password,
-        name="send_reset_password",
+        views.send_forgotten_passord_email,
+        name="send_email_forgot_password",
     ),
     path(
         "reset_password/<uuid:token>/",
-        views.reset_password,
+        views.reset_forgotten_password,
         name="reset_password",
     ),
+    path("forgot_password/", views.reset_forgotten_password, name="forgot_password"),
 ]

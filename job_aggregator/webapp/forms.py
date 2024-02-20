@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 import re
 from django.core.exceptions import ValidationError
-from .models import EmailVerification, SendResetPasswordEmail
+from .models import EmailVerification
 from django.contrib.auth import authenticate
 
 
