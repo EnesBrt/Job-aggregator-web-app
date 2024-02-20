@@ -197,7 +197,7 @@ def send_forgotten_passord_email(request):
                 )
 
             except User.DoesNotExist:
-                return redirect("email_not_found")
+                return redirect("send_email_forgot_password")
 
             # generate a token
             token = reset_password_email.token
