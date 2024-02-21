@@ -14,7 +14,7 @@ class EmailVerification(models.Model):
 
     @property
     def token_expired(self):
-        expiration_duration = timedelta(minutes=30)
+        expiration_duration = timedelta(hours=3)
         return self.created_at < timezone.now() - expiration_duration
 
 
@@ -27,5 +27,5 @@ class ResetForgottenPassword(models.Model):
 
     @property
     def token_expired(self):
-        expiration_duration = timedelta(minutes=30)
-        return self.created_at > self.created_at + timedelta(minutes=30)
+        expiration_duration = timedelta(hours=3)
+        return self.created_at < self.created_at - expiration_duration
