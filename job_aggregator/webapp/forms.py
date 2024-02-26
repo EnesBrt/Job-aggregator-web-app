@@ -76,8 +76,8 @@ class SigninForm(forms.ModelForm):
 
 # Login form
 class LoginForm(forms.Form):
-    username = forms.CharField(max_length=900)
-    password = forms.CharField(max_length=900, widget=forms.PasswordInput)
+    username = forms.CharField(max_length=500)
+    password = forms.CharField(max_length=500, widget=forms.PasswordInput)
 
 
 # Send email for forgotten password form
@@ -127,3 +127,7 @@ class ResetForgottenPasswordForm(forms.Form):
 
         if new_password != confirm_new_password:
             raise ValidationError("Les mots de passes ne correspondent pas")
+
+
+class ResearchBarForm(models.Model):
+    research = models.CharField(max_length=500)

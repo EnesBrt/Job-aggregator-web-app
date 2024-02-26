@@ -7,6 +7,7 @@ from .forms import (
     LoginForm,
     EmailForgottenPasswordForm,
     ResetForgottenPasswordForm,
+    ResearchBarForm,
 )
 from .models import EmailVerification, ResetForgottenPassword
 from django.core.mail import send_mail, EmailMessage
@@ -180,6 +181,11 @@ def activation_failed(request, user_id=None):
 
 # Job board view
 def job_board(request):
+    if request.method == "POST":
+        query = ResearchBarForm(request.POST)
+        if query.is_valid():
+            query = query.cleaned_data["research"]
+            return redirect("job_board")
     return render(request, "job_board.html")
 
 
