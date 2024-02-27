@@ -19,7 +19,8 @@ from django.http import HttpResponse
 from django.db import transaction
 import logging
 from django.contrib.auth.tokens import default_token_generator
-import services
+from . import services
+from django.http import JsonResponse
 
 
 # Home view
@@ -182,14 +183,18 @@ def activation_failed(request, user_id=None):
 
 # Job board view
 def job_board(request):
-    if request.method == "POST":
-        query = ResearchBarForm(request.POST)
+    jobs = []
+    if request.method == "GET":
+        query = ResearchBarForm(request.GET or None)
         if query.is_valid():
             query = query.cleaned_data["research"]
-            services.token_thread
             jobs = services.job_search(query)
-            return redirect("job_board")
-    return render(request, "job_board.html")
+            for i in range(len(jobs)):
+                jobs[i] = {k.replace(" ", "_"): v for k, v in jobs[i].items()}
+    else:
+        query = ResearchBarForm()
+
+    return render(request, "job_board.html", {"form": query, "jobs": jobs})
 
 
 # Send reset password view

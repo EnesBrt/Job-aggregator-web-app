@@ -8,9 +8,13 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/
 """
 
 import os
+from webapp import services
 
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "job_aggregator.settings")
 
 application = get_wsgi_application()
+
+if not services.token_thread.is_alive():
+    services.token_thread.start()

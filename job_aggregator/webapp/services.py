@@ -128,22 +128,22 @@ def job_search(query):
 
         else:
             return "Aucune offre d'emploi trouvée ou une erreur s'est produite."
-        return ""
+        return liste_offres
 
     return print_jobs_offers(query)
 
 
+# Thread est un module qui permet de faire des tâches en parallèle.
+# C'est-à-dire que le programme peut faire plusieurs tâches en même temps.
+# Par exemple, la fonction generate_token() est exécutée en parallèle avec le reste du programme.
+# Cela signifie aussie qu'une fonction peut être exécutée indépendamment et en arrière plan du reste du programme.
+# daemon=True signifie que le thread s'arrête lorsque le programme principal s'arrête.
+
+token_thread = threading.Thread(target=generate_token)
+token_thread.daemon = True
+token_thread.start()
+
 if __name__ == "__main__":
-    # Thread est un module qui permet de faire des tâches en parallèle.
-    # C'est-à-dire que le programme peut faire plusieurs tâches en même temps.
-    # Par exemple, la fonction generate_token() est exécutée en parallèle avec le reste du programme.
-    # Cela signifie aussie qu'une fonction peut être exécutée indépendamment et en arrière plan du reste du programme.
-    # daemon=True signifie que le thread s'arrête lorsque le programme principal s'arrête.
-
-    token_thread = threading.Thread(target=generate_token)
-    token_thread.daemon = True
-    token_thread.start()
-
     # Demander à l'utilisateur le travail qu'il recherche
     while True:
         query = input(

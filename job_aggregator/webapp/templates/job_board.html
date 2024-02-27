@@ -1,0 +1,25 @@
+{% block title %}job board{% endblock %}
+
+{% block content %}
+<div>
+    <form method="get">
+        {{ form.research }}
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+{% for job in jobs %}
+    <div>
+        <h2>Intitulé: {{ job.Intitulé }}</h2>
+        <p>Entreprise: {{ job.Entreprise }}</p>
+        <p>Lieu de travail: {{ job.Lieu_de_travail }}</p>
+        <p>Type de contrat: {{ job.Type_de_contrat }}</p>
+        <p>Origine de l'offre: {{ job.Origine_offre }}</p>
+        <p>Description: {{ job.Description }}</p>
+    </div>
+    <hr>
+{% empty %}
+    <p>No jobs found.</p>
+{% endfor %}
+
+{% endblock %}

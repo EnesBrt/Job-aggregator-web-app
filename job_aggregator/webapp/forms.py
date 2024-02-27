@@ -129,5 +129,5 @@ class ResetForgottenPasswordForm(forms.Form):
             raise ValidationError("Les mots de passes ne correspondent pas")
 
 
-class ResearchBarForm(models.Model):
-    research = models.CharField(max_length=500)
+class ResearchBarForm(forms.Form):
+    research = forms.CharField(max_length=500)
