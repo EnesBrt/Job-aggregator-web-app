@@ -186,7 +186,8 @@ def job_board(request):
         query = ResearchBarForm(request.POST)
         if query.is_valid():
             query = query.cleaned_data["research"]
-
+            services.token_thread
+            jobs = services.job_search(query)
             return redirect("job_board")
     return render(request, "job_board.html")
 
