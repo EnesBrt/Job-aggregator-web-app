@@ -19,6 +19,7 @@ from django.http import HttpResponse
 from django.db import transaction
 import logging
 from django.contrib.auth.tokens import default_token_generator
+import services
 
 
 # Home view
@@ -185,6 +186,7 @@ def job_board(request):
         query = ResearchBarForm(request.POST)
         if query.is_valid():
             query = query.cleaned_data["research"]
+
             return redirect("job_board")
     return render(request, "job_board.html")
 
