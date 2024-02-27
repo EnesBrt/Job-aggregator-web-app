@@ -105,6 +105,7 @@ def job_search(query):
                 liste_offres.append(liste_offres_dict)
 
                 # Affichage formaté des offres d'emploi
+                """
                 for offre in liste_offres:
                     print("\n")
                     print(f"Intitulé: {offre['Intitulé']}")
@@ -125,7 +126,7 @@ def job_search(query):
                     print("\n")
                     print("-" * 100)
                     print("\n")
-
+                """
         else:
             return "Aucune offre d'emploi trouvée ou une erreur s'est produite."
         return liste_offres
