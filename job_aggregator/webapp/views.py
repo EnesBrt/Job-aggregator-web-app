@@ -191,8 +191,8 @@ def job_board(request):
             jobs = services.job_search(query)
             for i in range(len(jobs)):
                 jobs[i] = {k.replace(" ", "_"): v for k, v in jobs[i].items()}
-    else:
-        query = ResearchBarForm()
+
+    query = ResearchBarForm()
 
     return render(request, "job_board.html", {"form": query, "jobs": jobs})
 
