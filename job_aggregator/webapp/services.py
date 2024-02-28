@@ -36,6 +36,8 @@ def generate_token():
             if "access_token" in response_json:
                 current_token = response_json["access_token"]
                 expires_in = response_json["expires_in"]
+                # Dormir pendant la durée d'expiration moins un délai de sécurité de 60 secondes
+                time.sleep(expires_in - 60)
             else:
                 print("access_token not found in the response")
             time.sleep(1439)
@@ -67,6 +69,11 @@ def job_search(query):
             time.sleep(0.1)
         try:
             response = requests.get(url, headers=headers)
+            if response.status_code == 401 or response.status_code == 500:
+                print("token non valide, renouvellement du token...")
+                generate_token()
+                response = requests.get(url, headers=headers)
+            return response.json()
         except requests.exceptions.RequestException as e:
             print(e)
             return None
