@@ -1,6 +1,17 @@
 {% block title %}job board{% endblock %}
 
 {% block content %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif; /* Changez cela pour la police que vous voulez utiliser */
+    }
+    pre {
+        font-family: Arial, sans-serif; /* Changez cela pour la police que vous voulez utiliser */
+    }
+</style>
+
+
 <div>
     <form method="get">
         {{ form.research }}
@@ -9,13 +20,18 @@
 </div>
 
 {% for job in jobs %}
-    <div>
+    <div id="jobs">
         <h2>Intitulé: {{ job.Intitulé }}</h2>
-        <p>Entreprise: {{ job.Entreprise }}</p>
-        <p>Lieu de travail: {{ job.Lieu_de_travail }}</p>
+        <p>Entreprise: {{ job.Entreprise.nom }}</p>
+        <p>Description de l'entreprise: {{ job.Entreprise.description }}</p>
+        <p>Site web de l'entreprise: <a href="{{ job.Entreprise.url }}">{{ job.Entreprise.url }}</a></p>
+        <p>Lieu de travail: {{ job.Lieu_de_travail.libelle }}</p>
         <p>Type de contrat: {{ job.Type_de_contrat }}</p>
-        <p>Origine de l'offre: {{ job.Origine_offre }}</p>
-        <p>Description: {{ job.Description }}</p>
+        <p>Origine de l'offre: <a href="{{ job.Origine_offre.urlOrigine }}">{{ job.Origine_offre.urlOrigine }}</a></p>
+        {% for partenaire in job.Origine_offre.partenaires %}
+            <p>Partenaire: {{ partenaire.nom }} - <a href="{{ partenaire.url }}">{{ partenaire.url }}</a></p>
+        {% endfor %}
+        <pre>Description: {{ job.Description }}</pre>
     </div>
     <hr>
 {% endfor %}
