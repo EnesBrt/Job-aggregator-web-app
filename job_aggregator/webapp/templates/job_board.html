@@ -4,10 +4,14 @@
 
 <style>
     body {
-        font-family: Arial, sans-serif; /* Changez cela pour la police que vous voulez utiliser */
+        font-family: Arial, sans-serif;
+        text-align: justify;
     }
+
     pre {
-        font-family: Arial, sans-serif; /* Changez cela pour la police que vous voulez utiliser */
+        white-space: pre-line;
+        font-family: Arial, sans-serif;
+        text-align: justify;
     }
 </style>
 
@@ -22,14 +26,17 @@
 {% for job in jobs %}
     <div id="jobs">
         <h2>Intitulé: {{ job.Intitulé }}</h2>
-        <p>Entreprise: {{ job.Entreprise.nom }}</p>
-        <p>Description de l'entreprise: {{ job.Entreprise.description }}</p>
-        <p>Site web de l'entreprise: <a href="{{ job.Entreprise.url }}">{{ job.Entreprise.url }}</a></p>
-        <p>Lieu de travail: {{ job.Lieu_de_travail.libelle }}</p>
-        <p>Type de contrat: {{ job.Type_de_contrat }}</p>
-        <p>Origine de l'offre: <a href="{{ job.Origine_offre.urlOrigine }}">{{ job.Origine_offre.urlOrigine }}</a></p>
+        {% if job.Entreprise.nom %}
+            <pre>Entreprise: {{ job.Entreprise.nom }}</pre>
+        {% endif %}
+        {% if job.Entreprise.description %}
+            <pre>Description de l'entreprise: {{ job.Entreprise.description }}</pre>
+        {% endif %}
+        <pre>Lieu de travail: {{ job.Lieu_de_travail.libelle }}</pre>
+        <pre>Type de contrat: {{ job.Type_de_contrat }}</pre>
+        <pre>Origine de l'offre: <a href="{{ job.Origine_offre.urlOrigine }}">{{ job.Origine_offre.urlOrigine }}</a></pre>
         {% for partenaire in job.Origine_offre.partenaires %}
-            <p>Partenaire: {{ partenaire.nom }} - <a href="{{ partenaire.url }}">{{ partenaire.url }}</a></p>
+            <pre>Partenaire: {{ partenaire.nom }} - <a href="{{ partenaire.url }}">{{ partenaire.url }}</a></pre>
         {% endfor %}
         <pre>Description: {{ job.Description }}</pre>
     </div>

@@ -18,8 +18,8 @@ def generate_token():
 
     data = {
         "grant_type": "client_credentials",
-        "client_id": "PAR_workaggregator_ee8cb10259812735491d63cc561ccf914ca4fe0d5d8200bb2c8a9d00e1675ccb",
-        "client_secret": "0648ecc579205505bad5baac69707651b387236de69c6603bf87ec6b3756733c",
+        "client_id": "PAR_workaggregator_a30664a55d29ccbe52caf22755443f85fd7e803404c0c733f4113f0f89bf4336",
+        "client_secret": "bdf0504a83deb575d744fdb9ccb3ae1d45ffbc54b701723e6ce5c14e08b574b4",
         "scope": "api_offresdemploiv2 o2dsoffre",
     }
 
@@ -27,6 +27,8 @@ def generate_token():
     while True:
         try:
             response = requests.post(url, headers=headers, data=data)
+            print(f"Status code: {response.status_code}")
+            print(f"Response body: {response.text}")
             try:
                 response_json = response.json()
             except json.JSONDecodeError:

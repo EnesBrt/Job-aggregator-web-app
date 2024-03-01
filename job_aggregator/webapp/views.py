@@ -21,6 +21,7 @@ import logging
 from django.contrib.auth.tokens import default_token_generator
 from . import services
 from django.http import JsonResponse
+import re
 
 
 # Home view
@@ -191,6 +192,10 @@ def job_board(request):
             jobs = services.job_search(query)
             for i in range(len(jobs)):
                 jobs[i] = {k.replace(" ", "_"): v for k, v in jobs[i].items()}
+                if jobs[i]:
+                    for key, value in jobs[i].items():
+                        if isinstance(value, str):
+                            jobs[i][key] = re.sub("[?*¿]", "", value).strip()
 
     query = ResearchBarForm()
 
