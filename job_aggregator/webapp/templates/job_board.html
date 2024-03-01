@@ -1,3 +1,4 @@
+{% extends "base.html" %}
 {% block title %}job board{% endblock %}
 
 {% block content %}
@@ -5,7 +6,6 @@
 <style>
     body {
         font-family: Arial, sans-serif;
-        text-align: justify;
     }
 
     pre {
@@ -15,32 +15,48 @@
     }
 </style>
 
-
-<div>
-    <form method="get">
-        {{ form.research }}
-        <button type="submit">Search</button>
-    </form>
-</div>
-
-{% for job in jobs %}
-    <div id="jobs">
-        <h2>Intitulé: {{ job.Intitulé }}</h2>
-        {% if job.Entreprise.nom %}
-            <pre>Entreprise: {{ job.Entreprise.nom }}</pre>
-        {% endif %}
-        {% if job.Entreprise.description %}
-            <pre>Description de l'entreprise: {{ job.Entreprise.description }}</pre>
-        {% endif %}
-        <pre>Lieu de travail: {{ job.Lieu_de_travail.libelle }}</pre>
-        <pre>Type de contrat: {{ job.Type_de_contrat }}</pre>
-        <pre>Origine de l'offre: <a href="{{ job.Origine_offre.urlOrigine }}">{{ job.Origine_offre.urlOrigine }}</a></pre>
-        {% for partenaire in job.Origine_offre.partenaires %}
-            <pre>Partenaire: {{ partenaire.nom }} - <a href="{{ partenaire.url }}">{{ partenaire.url }}</a></pre>
-        {% endfor %}
-        <pre>Description: {{ job.Description }}</pre>
+<div class="uk-container">
+    <div class="uk-margin uk-text-center">
+        <form class="uk-search uk-search-default" method="get">
+            {{ form.research }}
+            <button class="uk-button uk-button-default" type="submit">Search</button>
+        </form>
     </div>
-    <hr>
-{% endfor %}
+
+    
+    <div class="uk-child-width-1-2@s uk-grid-match" uk-grid>
+        {% for job in jobs %}
+        <div>
+            <div class="uk-card uk-card-default uk-card-body uk-border-rounded">
+                <h3 class="uk-card-title">Intitulé: {{ job.Intitulé }}</h3>
+                <p>Entreprise: {{ job.Entreprise.nom }}</p>
+                <p>Lieu de travail: {{ job.Lieu_de_travail.libelle }}</p>
+                <p>Type de contrat: {{ job.Type_de_contrat }}</p>
+                <p>Origine de l'offre: <a href="{{ job.Origine_offre.urlOrigine }}">{{ job.Origine_offre.urlOrigine }}</a></p>
+                {% for partenaire in job.Origine_offre.partenaires %}
+                    <p>Partenaire: {{ partenaire.nom }} - <a href="{{ partenaire.url }}">{{ partenaire.url }}</a></p>
+                {% endfor %}
+                <button class="uk-button uk-button-default" type="button" uk-toggle="target: #modal-{{ forloop.counter }}">Voir plus</button>
+
+                <!-- Modal -->
+                <div id="modal-{{ forloop.counter }}" uk-modal>
+                    <div class="uk-modal-dialog uk-modal-body">
+                        <h2 class="uk-modal-title">Intitulé: {{ job.Intitulé }}</h2>
+                        <p>Entreprise: {{ job.Entreprise.nom }}</p>
+                        <p>Lieu de travail: {{ job.Lieu_de_travail.libelle }}</p>
+                        <p>Type de contrat: {{ job.Type_de_contrat }}</p>
+                        <p>Origine de l'offre: <a href="{{ job.Origine_offre.urlOrigine }}">{{ job.Origine_offre.urlOrigine }}</a></p>
+                        {% for partenaire in job.Origine_offre.partenaires %}
+                            <p>Partenaire: {{ partenaire.nom }} - <a href="{{ partenaire.url }}">{{ partenaire.url }}</a></p>
+                        {% endfor %}
+                        <pre>Description: {{ job.Description }}</pre>
+                        <button class="uk-modal-close" type="button">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
 {% endblock %}
