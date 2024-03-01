@@ -13,6 +13,12 @@
         font-family: Arial, sans-serif;
         text-align: justify;
     }
+
+    .break-word {
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        hyphens: auto;
+    }
 </style>
 
 <div class="uk-container">
@@ -32,24 +38,24 @@
                 <p>Entreprise: {{ job.Entreprise.nom }}</p>
                 <p>Lieu de travail: {{ job.Lieu_de_travail.libelle }}</p>
                 <p>Type de contrat: {{ job.Type_de_contrat }}</p>
-                <p>Origine de l'offre: <a href="{{ job.Origine_offre.urlOrigine }}">{{ job.Origine_offre.urlOrigine }}</a></p>
+                <p>Origine de l'offre: <a href="{{ job.Origine_offre.urlOrigine }}" class="break-word">Offre France Travail</a></p>
                 {% for partenaire in job.Origine_offre.partenaires %}
-                    <p>Partenaire: {{ partenaire.nom }} - <a href="{{ partenaire.url }}">{{ partenaire.url }}</a></p>
+                    <p>Partenaire: <a href="{{ partenaire.url }}" class="break-word">{{ partenaire.nom }}</a></p>
                 {% endfor %}
                 <button class="uk-button uk-button-default" type="button" uk-toggle="target: #modal-{{ forloop.counter }}">Voir plus</button>
 
                 <!-- Modal -->
                 <div id="modal-{{ forloop.counter }}" uk-modal>
-                    <div class="uk-modal-dialog uk-modal-body">
+                    <div class="uk-modal-dialog uk-modal-body uk-text-break">
                         <h2 class="uk-modal-title">Intitulé: {{ job.Intitulé }}</h2>
                         <p>Entreprise: {{ job.Entreprise.nom }}</p>
                         <p>Lieu de travail: {{ job.Lieu_de_travail.libelle }}</p>
                         <p>Type de contrat: {{ job.Type_de_contrat }}</p>
-                        <p>Origine de l'offre: <a href="{{ job.Origine_offre.urlOrigine }}">{{ job.Origine_offre.urlOrigine }}</a></p>
+                        <p>Origine de l'offre: <a href="{{ job.Origine_offre.urlOrigine }}" class="break-word">Offre France Travail</a></p>
                         {% for partenaire in job.Origine_offre.partenaires %}
-                            <p>Partenaire: {{ partenaire.nom }} - <a href="{{ partenaire.url }}">{{ partenaire.url }}</a></p>
+                            <p>Partenaire: <a href="{{ partenaire.url }}" class="break-word">{{ partenaire.nom }}</a></p>
                         {% endfor %}
-                        <pre>Description: {{ job.Description }}</pre>
+                        <p>Description: {{ job.Description }}</p>
                         <button class="uk-modal-close" type="button">Fermer</button>
                     </div>
                 </div>
