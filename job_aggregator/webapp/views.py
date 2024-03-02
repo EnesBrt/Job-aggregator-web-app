@@ -190,9 +190,11 @@ def job_board(request):
         query = ResearchBarForm(request.GET or None)
         if query.is_valid():
             query = query.cleaned_data["research"]
+            # Vérifier si la recherche est supérieure à 2 caractères
             if len(query) >= 2:
                 try:
                     jobs = services.job_search(query)
+                # message d'erreur si aucune offre n'est trouvée
                 except Exception as e:
                     messages.error(
                         request,
