@@ -12,12 +12,21 @@
         white-space: pre-line;
         font-family: Arial, sans-serif;
         text-align: justify;
+        color: #000;
     }
 
     .break-word {
         overflow-wrap: break-word;
         word-wrap: break-word;
         hyphens: auto;
+    }
+
+    .uk-card {
+        color: #000;
+    }
+
+    .uk-modal-dialog {
+        color: #000;
     }
 </style>
 
@@ -27,35 +36,45 @@
             {{ form.research }}
             <button class="uk-button uk-button-default" type="submit">Search</button>
         </form>
+        {% if messages %}
+        <div class="message-container">
+            {% for message in messages %}
+                <p class="{{ message.tags }}">{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>
 
-    
     <div class="uk-child-width-1-2@s uk-grid-match" uk-grid>
         {% for job in jobs %}
         <div>
             <div class="uk-card uk-card-default uk-card-body uk-border-rounded">
-                <h3 class="uk-card-title">Intitulé: {{ job.Intitulé }}</h3>
-                <p>Entreprise: {{ job.Entreprise.nom }}</p>
+                <h3 class="uk-card-title">{{ job.Intitulé }}</h3>
+                {% if job.Entreprise.nom %}
+                    <p>Entreprise: {{ job.Entreprise.nom }}</p>
+                {% endif %}
                 <p>Lieu de travail: {{ job.Lieu_de_travail.libelle }}</p>
                 <p>Type de contrat: {{ job.Type_de_contrat }}</p>
-                <p>Origine de l'offre: <a href="{{ job.Origine_offre.urlOrigine }}" class="break-word">Offre France Travail</a></p>
+                <p>Postuler sur France Travail: <a href="{{ job.Origine_offre.urlOrigine }}" class="break-word">Cliquer ici !</a></p>
                 {% for partenaire in job.Origine_offre.partenaires %}
-                    <p>Partenaire: <a href="{{ partenaire.url }}" class="break-word">{{ partenaire.nom }}</a></p>
+                    <p>Postuler sur {{ partenaire.nom }}: <a href="{{ partenaire.url }}" class="break-word">{{ partenaire.nom }}</a></p>
                 {% endfor %}
                 <button class="uk-button uk-button-default" type="button" uk-toggle="target: #modal-{{ forloop.counter }}">Voir plus</button>
 
                 <!-- Modal -->
                 <div id="modal-{{ forloop.counter }}" uk-modal>
                     <div class="uk-modal-dialog uk-modal-body uk-text-break">
-                        <h2 class="uk-modal-title">Intitulé: {{ job.Intitulé }}</h2>
-                        <p>Entreprise: {{ job.Entreprise.nom }}</p>
+                        <h2 class="uk-modal-title">{{ job.Intitulé }}</h2>
+                        {% if job.Entreprise.nom %}
+                            <p>Entreprise: {{ job.Entreprise.nom }}</p>
+                        {% endif %}
                         <p>Lieu de travail: {{ job.Lieu_de_travail.libelle }}</p>
                         <p>Type de contrat: {{ job.Type_de_contrat }}</p>
-                        <p>Origine de l'offre: <a href="{{ job.Origine_offre.urlOrigine }}" class="break-word">Offre France Travail</a></p>
+                        <p>Postuler sur France Travail: <a href="{{ job.Origine_offre.urlOrigine }}" class="break-word">Cliquer ici !</a></p>
                         {% for partenaire in job.Origine_offre.partenaires %}
-                            <p>Partenaire: <a href="{{ partenaire.url }}" class="break-word">{{ partenaire.nom }}</a></p>
+                            <p>Postuler sur {{ partenaire.nom }}: <a href="{{ partenaire.url }}" class="break-word">{{ partenaire.nom }}</a></p>
                         {% endfor %}
-                        <p>Description: {{ job.Description }}</p>
+                        <pre>{{ job.Description }}</pre>
                         <button class="uk-modal-close" type="button">Fermer</button>
                     </div>
                 </div>

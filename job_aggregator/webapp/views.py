@@ -22,6 +22,7 @@ from django.contrib.auth.tokens import default_token_generator
 from . import services
 from django.http import JsonResponse
 import re
+from django.contrib import messages
 
 
 # Home view
@@ -189,15 +190,21 @@ def job_board(request):
         query = ResearchBarForm(request.GET or None)
         if query.is_valid():
             query = query.cleaned_data["research"]
-            jobs = services.job_search(query)
-            for i in range(len(jobs)):
-                jobs[i] = {k.replace(" ", "_"): v for k, v in jobs[i].items()}
-                if jobs[i]:
-                    for key, value in jobs[i].items():
-                        if isinstance(value, str):
-                            jobs[i][key] = re.sub("[?*¿]", "", value).strip()
+            if len(query) >= 2:
+                # Remove special characters from the job titles
+                jobs = services.job_search(query)
+                for i in range(len(jobs)):
+                    jobs[i] = {k.replace(" ", "_"): v for k, v in jobs[i].items()}
+                    if jobs[i]:
+                        for key, value in jobs[i].items():
+                            if isinstance(value, str):
+                                jobs[i][key] = re.sub("[?*¿]", "", value).strip()
+            else:
+                messages.error(request, "Veuillez saisir au moins 2 lettres")
+                jobs = request.session.get("jobs", [])
 
     query = ResearchBarForm()
+    request.session["jobs"] = jobs
 
     return render(request, "job_board.html", {"form": query, "jobs": jobs})
 
