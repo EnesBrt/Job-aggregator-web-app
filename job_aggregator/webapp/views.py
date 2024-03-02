@@ -191,8 +191,15 @@ def job_board(request):
         if query.is_valid():
             query = query.cleaned_data["research"]
             if len(query) >= 2:
+                try:
+                    jobs = services.job_search(query)
+                except Exception as e:
+                    messages.error(
+                        request,
+                        f"Aucune offre pour '{query}' n'a été trouvée.",
+                    )
+
                 # Remove special characters from the job titles
-                jobs = services.job_search(query)
                 for i in range(len(jobs)):
                     jobs[i] = {k.replace(" ", "_"): v for k, v in jobs[i].items()}
                     if jobs[i]:
@@ -200,8 +207,11 @@ def job_board(request):
                             if isinstance(value, str):
                                 jobs[i][key] = re.sub("[?*¿]", "", value).strip()
             else:
+                # message d'erreur si la recherche est inférieure à 2 caractères
                 messages.error(request, "Veuillez saisir au moins 2 lettres")
-                jobs = request.session.get("jobs", [])
+                # récupérer les offres d'emploi de la session si elles existent déjà pour éviter de les écraser avec une recherche vide ou invalide
+                if "jobs" in request.session:
+                    jobs = request.session.get("jobs", [])
 
     query = ResearchBarForm()
     request.session["jobs"] = jobs
