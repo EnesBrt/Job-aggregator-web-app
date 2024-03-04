@@ -23,6 +23,7 @@ from . import services
 from django.http import JsonResponse
 import re
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 # Home view
@@ -186,6 +187,7 @@ def activation_failed(request, user_id=None):
 # Job board view
 def job_board(request):
     jobs = []
+    get_the_page = None
     if request.method == "GET":
         query = ResearchBarForm(request.GET or None)
         if query.is_valid():
@@ -194,31 +196,56 @@ def job_board(request):
             if len(query) >= 2:
                 try:
                     jobs = services.job_search(query)
+                    request.session["jobs"] = jobs
                 # message d'erreur si aucune offre n'est trouvée
                 except Exception as e:
                     messages.error(
                         request,
                         f"Aucune offre pour '{query}' n'a été trouvée.",
                     )
-
-                # Remove special characters from the job titles
-                for i in range(len(jobs)):
-                    jobs[i] = {k.replace(" ", "_"): v for k, v in jobs[i].items()}
-                    if jobs[i]:
-                        for key, value in jobs[i].items():
-                            if isinstance(value, str):
-                                jobs[i][key] = re.sub("[?*¿]", "", value).strip()
             else:
                 # message d'erreur si la recherche est inférieure à 2 caractères
                 messages.error(request, "Veuillez saisir au moins 2 lettres")
                 # récupérer les offres d'emploi de la session si elles existent déjà pour éviter de les écraser avec une recherche vide ou invalide
                 if "jobs" in request.session:
                     jobs = request.session.get("jobs", [])
+        else:
+            # récupérer les offres d'emploi de la session si aucune recherche n'est effectuée
+            if "jobs" in request.session:
+                jobs = request.session.get("jobs", [])
+
+        if jobs:
+            # pagination
+            paginator = Paginator(jobs, 20)
+            # récupérer le numéro de la page
+            page_number = request.GET.get("page")
+            if page_number is None:
+                page_number = 1
+            try:
+                # récupérer les offres de la page
+                get_the_page = paginator.get_page(page_number)
+            except PageNotAnInteger:
+                # Si la page n'est pas un entier, fournir la première page
+                get_the_page = paginator.get_page(1)
+            except EmptyPage:
+                # Si la page est hors de portée, fournir la dernière page
+                get_the_page = paginator.get_page(paginator.num_pages)
+
+            # Remove special characters from the job titles
+            for i in range(len(jobs)):
+                jobs[i] = {k.replace(" ", "_"): v for k, v in jobs[i].items()}
+                if jobs[i]:
+                    for key, value in jobs[i].items():
+                        if isinstance(value, str):
+                            jobs[i][key] = re.sub("[?*¿]", "", value).strip()
 
     query = ResearchBarForm()
-    request.session["jobs"] = jobs
 
-    return render(request, "job_board.html", {"form": query, "jobs": jobs})
+    return render(
+        request,
+        "job_board.html",
+        {"form": query, "jobs": jobs, "get_the_page": get_the_page},
+    )
 
 
 # Send reset password view

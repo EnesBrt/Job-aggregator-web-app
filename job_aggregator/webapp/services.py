@@ -98,9 +98,6 @@ def job_search(query):
         liste_offres = []
         if job_offers is not None:
             for i, offer in enumerate(job_offers):
-                if i >= 20:
-                    break
-
                 liste_offres_dict = {
                     "Intitulé": offer.get("intitule"),
                     "Entreprise": offer.get("entreprise"),

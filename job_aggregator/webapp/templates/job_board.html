@@ -28,25 +28,90 @@
     .uk-modal-dialog {
         color: #000;
     }
+
+    .nav-button {
+        background-color: blue !important;
+        color: white !important;
+        border-radius: 5px !important;
+        margin-right: 10px !important;
+        width: 100px !important;
+        font-size: 0.8em !important;
+        padding: 0 5px !important;
+        display: flex !important;
+        justify-content: center !important; 
+        align-items: center !important;
+        
+    }
+
+    .button-container {
+        margin-top: 40px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .nav-button, .page-button {
+        display: inline-block !important; 
+    
+    }
+
+    .nav-button-container, .page-button-container {
+        align-self: center;
+    }
+
+    .nav-button-container {
+        text-align: left;
+    }
+
+    .page-button-container {
+        text-align: right;
+    }
+
+    .page-button {
+        background-color: blue !important;
+        color: white !important;
+        border-radius: 5px !important;
+    }
+
+    .uk-container {
+        margin-top: 50px;
+        margin-bottom: 50px;
+    }
+
+    .search-container {
+        width: 80%; 
+    .search-input {
+        width: 85% !important; 
+    }
+    .search-button {
+        width: 15% !important; 
+    }
+
+
+
 </style>
 
 <div class="uk-container">
-    <div class="uk-margin uk-text-center">
-        <form class="uk-search uk-search-default" method="get">
-            {{ form.research }}
-            <button class="uk-button uk-button-default" type="submit">Search</button>
-        </form>
-        {% if messages %}
+    <div class="uk-margin-large-top uk-margin-large-bottom uk-flex uk-flex-center">
+        <div class="search-container uk-flex">
+            <form class="uk-search uk-search-default uk-flex uk-width-1-1" method="get">
+                <input class="uk-input search-input uk-width-1-1" type="search" placeholder="Par exemple: Développeur Fullstack..." name="research" value="{{ form.research.value|default:'' }}">
+                <button class="uk-button uk-button-default uk-border-rounded search-button uk-flex uk-flex-center uk-flex-middle" type="submit">Rechercher</button>
+            </form>
+        </div>
+    </div>
+    {% if messages %}
+    <div class="uk-text-center">
         <div class="message-container">
             {% for message in messages %}
                 <p class="{{ message.tags }}">{{ message }}</p>
             {% endfor %}
         </div>
-        {% endif %}
     </div>
+    {% endif %}
 
     <div class="uk-child-width-1-2@s uk-grid-match" uk-grid>
-        {% for job in jobs %}
+        {% for job in get_the_page %}
         <div>
             <div class="uk-card uk-card-default uk-card-body uk-border-rounded">
                 <h3 class="uk-card-title">{{ job.Intitulé }}</h3>
@@ -82,6 +147,35 @@
         </div>
         {% endfor %}
     </div>
-</div>
+    <div class="button-container">
+        <div class="nav-button-container">
+            {% if get_the_page and get_the_page.has_previous %}
+                <a href="?page={{ get_the_page.previous_page_number }}{% if form.research.value %}&research={{ form.research.value }}{% endif %}" class="uk-button uk-button-default uk-button-small nav-button">Précédent</a>
+            {% endif %}
+            {% if get_the_page and get_the_page.has_next %}
+                <a href="?page={{ get_the_page.next_page_number }}{% if form.research.value %}&research={{ form.research.value }}{% endif %}" class="uk-button uk-button-default uk-button-small nav-button">Suivant</a>
+            {% endif %}
+        </div>
 
+        <div class="page-button-container">
+            {% if get_the_page.has_previous %}
+                <a href="?page=1{% if form.research.value %}&research={{ form.research.value }}{% endif %}" class="uk-button uk-button-default uk-button-small page-button">1</a>
+                {% if get_the_page.number > 3 %}
+                    <span>...</span>
+                {% endif %}
+            {% endif %}
+            {% for i in get_the_page.paginator.page_range %}
+                {% if i >= get_the_page.number|add:"-2" and i <= get_the_page.number|add:"2" %}
+                    <a href="?page={{ i }}{% if form.research.value %}&research={{ form.research.value }}{% endif %}" class="uk-button uk-button-default uk-button-small page-button">{{ i }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if get_the_page.has_next %}
+                {% if get_the_page.number < get_the_page.paginator.num_pages|add:"-2" %}
+                    <span>...</span>
+                {% endif %}
+                <a href="?page={{ get_the_page.paginator.num_pages }}{% if form.research.value %}&research={{ form.research.value }}{% endif %}" class="uk-button uk-button-default uk-button-small page-button">{{ get_the_page.paginator.num_pages }}</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}
