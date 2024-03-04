@@ -186,16 +186,22 @@ def activation_failed(request, user_id=None):
 
 # Job board view
 def job_board(request):
+    # Récupérer les offres d'emploi de la session
+    def get_jobs_from_session():
+        return request.session.get("jobs", [])
+
     jobs = []
     get_the_page = None
+    query = ResearchBarForm(request.GET or None)
+
     if request.method == "GET":
-        query = ResearchBarForm(request.GET or None)
         if query.is_valid():
             query = query.cleaned_data["research"]
             # Vérifier si la recherche est supérieure à 2 caractères
             if len(query) >= 2:
                 try:
                     jobs = services.job_search(query)
+                    # Enregistrer les offres d'emploi dans la session
                     request.session["jobs"] = jobs
                 # message d'erreur si aucune offre n'est trouvée
                 except Exception as e:
@@ -207,20 +213,25 @@ def job_board(request):
                 # message d'erreur si la recherche est inférieure à 2 caractères
                 messages.error(request, "Veuillez saisir au moins 2 lettres")
                 # récupérer les offres d'emploi de la session si elles existent déjà pour éviter de les écraser avec une recherche vide ou invalide
-                if "jobs" in request.session:
-                    jobs = request.session.get("jobs", [])
-        else:
-            # récupérer les offres d'emploi de la session si aucune recherche n'est effectuée
-            if "jobs" in request.session:
-                jobs = request.session.get("jobs", [])
+                jobs = get_jobs_from_session()
 
+        else:
+            # récupérer les offres d'emploi de la session si elles existent déjà
+            jobs = get_jobs_from_session()
+
+        # if jobs is not empty and is a list of dictionaries
         if jobs:
             # pagination
-            paginator = Paginator(jobs, 20)
-            # récupérer le numéro de la page
-            page_number = request.GET.get("page")
-            if page_number is None:
+            paginator = Paginator(jobs, min(20, len(jobs)))
+            # récupérer les offres de la page
+            page_number = request.GET.get("page", 1)
+
+            try:
+                page_number = int(page_number)
+            except ValueError:
                 page_number = 1
+
+            # Récupérer le numéro de page
             try:
                 # récupérer les offres de la page
                 get_the_page = paginator.get_page(page_number)
