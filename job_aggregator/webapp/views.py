@@ -221,6 +221,13 @@ def job_board(request):
 
         # if jobs is not empty and is a list of dictionaries
         if jobs:
+            for i in range(len(jobs)):
+                jobs[i] = {k.replace(" ", "_"): v for k, v in jobs[i].items()}
+                if jobs[i]:
+                    for key, value in jobs[i].items():
+                        if isinstance(value, str):
+                            jobs[i][key] = re.sub("[?*¿]", "", value).strip()
+
             # pagination
             paginator = Paginator(jobs, min(20, len(jobs)))
             # récupérer les offres de la page
@@ -243,12 +250,6 @@ def job_board(request):
                 get_the_page = paginator.get_page(paginator.num_pages)
 
             # Remove special characters from the job titles
-            for i in range(len(jobs)):
-                jobs[i] = {k.replace(" ", "_"): v for k, v in jobs[i].items()}
-                if jobs[i]:
-                    for key, value in jobs[i].items():
-                        if isinstance(value, str):
-                            jobs[i][key] = re.sub("[?*¿]", "", value).strip()
 
     query = ResearchBarForm()
 
