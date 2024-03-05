@@ -8,6 +8,7 @@ from .forms import (
     EmailForgottenPasswordForm,
     ResetForgottenPasswordForm,
     ResearchBarForm,
+    SettingsChangePassword,
 )
 from .models import EmailVerification, ResetForgottenPassword
 from django.core.mail import send_mail, EmailMessage
@@ -367,7 +368,36 @@ def profile(request):
 
 
 def settings(request):
-    return render(request, "settings.html")
+    if request.method == "POST":
+        form = SettingsChangePassword(request.POST)
+        if form.is_valid():
+            # retrive the user
+            user = User.objects.get(username=request.user.username)
+            # check if password is new_password and confirm_password are the same
+            if (
+                form.cleaned_data["new_password"]
+                == form.cleaned_data["confirm_new_password"]
+            ):
+                # update the user password
+                user.set_password(form.cleaned_data["new_password"])
+                messages.success(
+                    request, "Votre mot de passe a été modifié avec succès !"
+                )
+                user.save()
+                return redirect("settings")
+            else:
+                messages.error(request, "Les mots de passe ne correspondent pas !")
+
+                return render(
+                    request,
+                    "settings.html",
+                    {"error_message": error_message, "form": form},
+                )
+
+    else:
+        form = SettingsChangePassword()
+
+    return render(request, "settings.html", {"form": form})
 
 
 def logout_page(request):

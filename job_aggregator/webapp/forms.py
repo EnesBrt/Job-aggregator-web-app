@@ -131,3 +131,8 @@ class ResetForgottenPasswordForm(forms.Form):
 
 class ResearchBarForm(forms.Form):
     research = forms.CharField(max_length=500)
+
+
+class SettingsChangePassword(forms.Form):
+    new_password = forms.CharField(max_length=500, widget=forms.PasswordInput)
+    confirm_new_password = forms.CharField(max_length=500, widget=forms.PasswordInput)

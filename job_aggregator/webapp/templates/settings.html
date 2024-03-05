@@ -1,4 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    body {
+       margin-top: 150px; 
+    }
+</style>
+
+<div class="uk-container">
+    <h1>Vous pouvez modifier votre mot de passe ici.</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="uk-button uk-button-primary">Enregistrer</button>
+    </form>
+    {% if messages %}
+        <ul class="uk-list">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
 {% endblock %}
