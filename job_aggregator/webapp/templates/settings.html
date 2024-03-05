@@ -3,17 +3,51 @@
 {% block content %}
 <style>
     body {
-       margin-top: 150px; 
+       margin-top: 0px; 
+    }
+
+    .uk-text-center {
+        margin-top: 100px;
+    }
+    .uk-card {
+        margin-top: 80px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 20px;
+    }
+    .uk-button-primary {
+        background-color: #1e87f0;
+        color: white;
+        border-radius: 5px;
+    }
+    p {
+        margin-bottom: 30px;
+    }
+    label {
+        color: #000;
+        margin-bottom: 10px;
+        display: block;
     }
 </style>
 
-<div class="uk-container">
-    <h1>Vous pouvez modifier votre mot de passe ici.</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="uk-button uk-button-primary">Enregistrer</button>
-    </form>
+<div class="uk-container uk-flex uk-flex-center uk-flex-column uk-flex-middle uk-height-viewport">
+    <h1 class="uk-text-center">Vous pouvez modifier votre mot de passe ici.</h1>
+    <div class="uk-card uk-card-default uk-width-1-2@m">
+        <div class="uk-card-body">
+            <form method="post">
+                {% csrf_token %}
+                <p>
+                    <label for="{{ form.new_password.id_for_label }}">Nouveau mot de passe:</label>
+                    {{ form.new_password }}
+                </p>
+                <p>
+                    <label for="{{ form.confirm_new_password.id_for_label }}">Confirmer le nouveau mot de passe:</label>
+                    {{ form.confirm_new_password }}
+                </p>
+                <button type="submit" class="uk-button uk-button-primary">Enregistrer</button>
+            </form>
+        </div>
+    </div>
     {% if messages %}
         <ul class="uk-list">
             {% for message in messages %}
