@@ -359,3 +359,11 @@ def reset_forgotten_password(request, token):
         reset_password_form = ResetForgottenPasswordForm()
 
     return render(request, "forgot_password.html", {"form": reset_password_form})
+
+
+def profile(request):
+    return render(request, "profile.html")
+
+
+def settings(request):
+    return render(request, "settings.html")
