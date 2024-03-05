@@ -8,9 +8,38 @@
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.19.1/dist/js/uikit.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.19.1/dist/js/uikit-icons.min.js"></script>
 
-    {% block extra_head %}{% endblock %}
+    <style>
+        .uk-navbar-container {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            height: 90px;
+        }
+        
+    </style>
 </head>
 <body>
+    <nav class="uk-navbar-container">
+        <div class="uk-container">
+            <div uk-navbar>
+
+                <div class="uk-navbar-left">
+                    <a class="uk-navbar-toggle uk-navbar-toggle-animate" uk-navbar-toggle-icon href="#"></a>
+                    <div class="uk-navbar-dropdown">
+                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                            <li class="uk-active"><a href="#">Menu</a></li>
+                            <li><a href="{% url 'profile' %}">Profile</a></li>
+                            <li><a href="{% url 'settings' %}">Settings</a></li>
+                            <li><a href="{% url 'job_board' %}">Job board</a></li>
+                            <li><a href="{% url 'logout_page' %}">Logout</a>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </nav>
     {% block content %}{% endblock %}
 </body>
 </html>

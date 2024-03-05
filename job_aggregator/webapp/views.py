@@ -24,6 +24,7 @@ from django.http import JsonResponse
 import re
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth import logout as auth_logout
 
 
 # Home view
@@ -367,3 +368,8 @@ def profile(request):
 
 def settings(request):
     return render(request, "settings.html")
+
+
+def logout_page(request):
+    auth_logout(request)
+    return render(request, "logout_page.html")
