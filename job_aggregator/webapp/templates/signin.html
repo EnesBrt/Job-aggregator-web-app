@@ -1,32 +1,47 @@
-{% block title %}Sign In{% endblock %}
+{% block extra_head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.6.22/css/uikit.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.6.22/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.6.22/js/uikit-icons.min.js"></script>
+    <style>
+        .large-button-text {
+            font-size: 2em;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <form class="form-signin" method="post">
-        {% csrf_token %}
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <div>
-            <label for="{{ form.username.id_for_label }}" class="sr-only">Username</label>
-            {{ form.username }}
-            {{ form.username.errors }}
-        </div><br>
-        <div>
-            <label for="{{ form.email.id_for_label }}" class="sr-only">Email</label>
-            {{ form.email }}
-            {{ form.email.errors }}
-        </div><br>
-        <div>
-            <label for="{{ form.password.id_for_label }}" class="sr-only">Password</label>
-            {{ form.password }}
-            {{ form.password.errors }}
-        </div><br>
-        <div>
-            <label for="{{ form.confirm_password.id_for_label }}" class="sr-only">Password Confirm</label>
-            {{ form.confirm_password }}
-            {{ form.confirm_password.errors }}
-        </div><br>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-        </form>
-        <a href="{% url 'login' %}" >Login</a>
+<div class="uk-section uk-section-muted uk-flex uk-flex-middle uk-animation-fade" uk-height-viewport>
+    <div class="uk-width-1-1">
+        <div class="uk-container">
+            <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
+                <div class="uk-width-1-1@m">
+                    <div class="uk-margin uk-width-large uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-small">
+                        <h3 class="uk-card-title uk-text-center uk-text-large">Crée un compte</h3>
+                        <form method="post" class="uk-text-center">
+                            {% csrf_token %}
+                            {% for field in form %}
+                                <div class="uk-margin">
+                                    <div class="uk-inline uk-width-1-1">
+                                        <input class="uk-input uk-form-large" type="{{ field.field.widget.input_type }}" name="{{ field.html_name }}" placeholder="{{ field.label }}" value="{{ field.value|default:'' }}">
+                                        {% for error in field.errors %}
+                                            <div class="uk-alert-danger" uk-alert>
+                                                {{ error }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="uk-margin">
+                                <button class="uk-button uk-button-primary uk-button-large uk-width-1-1@m uk-width-1-1">Inscription</button>
+                            </div>
+                            <div class="uk-text-small uk-text-center">
+                                Vous avez déjà un compte ? <a href="{% url 'login' %}">Connexion</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
- {% endblock %}
+</div>
+{% endblock %}

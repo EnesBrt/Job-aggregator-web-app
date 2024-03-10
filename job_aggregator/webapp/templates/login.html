@@ -1,20 +1,48 @@
-{% block title %}Login{% endblock %}
-
-{% block content %}
-    <div class="container">
-        <form class="form-signin" method="post">
-            {% csrf_token %}
-            <h2 class="form-signin-heading">login</h2>
-            <label for="{{ form.username.id_for_label }}" class="sr-only">Username</label>
-                {{ form.username }}
-                {{ form.username.errors }}
-            <label for="{{ form.password.id_for_label }}" class="sr-only">Password</label>
-                {{ form.password }}
-                {{ form.password.errors }}
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
-        </form>
-        <a href="{% url 'signin' %}">Sign Up</a>
-        <a href="{% url 'send_email_forgot_password' %}">Forgot Password?</a>
-    </div>
+{% block extra_head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.6.22/css/uikit.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.6.22/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.6.22/js/uikit-icons.min.js"></script>
+    <style>
+        .large-button-text {
+            font-size: 2em;
+        }
+    </style>
 {% endblock %}
 
+{% block content %}
+<div class="uk-section uk-section-muted uk-flex uk-flex-middle uk-animation-fade" uk-height-viewport>
+    <div class="uk-width-1-1">
+        <div class="uk-container">
+            <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
+                <div class="uk-width-1-1@m">
+                    <div class="uk-margin uk-width-large uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-small">
+                        <h3 class="uk-card-title uk-text-center uk-text-large">Bienvenue !</h3>
+                        <form method="post" class="uk-text-center">
+                            {% csrf_token %}
+                            <div class="uk-margin">
+                                <div class="uk-inline uk-width-1-1">
+                                    <input class="uk-input uk-form-large" type="text" name="username" placeholder="Nom d'utilisateur">
+                                </div>
+                            </div>
+                            <div class="uk-margin">
+                                <div class="uk-inline uk-width-1-1">
+                                    <input class="uk-input uk-form-large" type="password" name="password" placeholder="Mot de passe">	
+                                </div>
+                            </div>
+                            <div class="uk-margin">
+                                <button class="uk-button uk-button-primary uk-button-large uk-width-1-1@m uk-width-1-1">Login</button>
+                            </div>
+                            <div class="uk-text-small uk-text-center">
+                                Pas encore inscrit ? <a href="{% url 'signin' %}">Crée un compte</a>
+                            </div>
+                            <div class="uk-text-small uk-text-center">
+                                <a href="{% url 'forgot_password' %}">Mot de passe oublié ?</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

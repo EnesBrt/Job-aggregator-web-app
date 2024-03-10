@@ -1,9 +1,27 @@
-{% block title %}Confirmation Sent{% endblock %}
+{% block extra_head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.6.22/css/uikit.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.6.22/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.6.22/js/uikit-icons.min.js"></script>
+{% endblock %}
+
+{% block title %}Confirmation Envoyée{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h2>Confirmation Sent</h2>
-        <p>We have sent you an email with a confirmation link. Please check your email and click on the link to complete the registration process.</p>
-        <a href="{% url 'login' %}" >Login</a>
+<div class="uk-section uk-section-muted uk-flex uk-flex-middle uk-animation-fade" uk-height-viewport>
+    <div class="uk-width-1-1">
+        <div class="uk-container">
+            <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
+                <div class="uk-width-1-1@m">
+                    <div class="uk-margin uk-width-large uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-small">
+                        <h2 class="uk-card-title uk-text-center">Confirmation Envoyée</h2>
+                        <p class="uk-text-center">Nous vous avons envoyé un email avec un lien de confirmation. Veuillez vérifier votre email et cliquer sur le lien pour terminer le processus d'inscription.</p>
+                        <div class="uk-text-center">
+                            <a href="{% url 'login' %}" class="uk-button uk-button-primary uk-button-large uk-width-1-1@m uk-width-1-1">Connexion</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 {% endblock %}

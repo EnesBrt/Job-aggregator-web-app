@@ -1,14 +1,30 @@
-{% block title %}Activation Failed{% endblock %}
+{% block extra_head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.6.22/css/uikit.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.6.22/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.6.22/js/uikit-icons.min.js"></script>
+{% endblock %}
+
+{% block title %}Échec de l'activation{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h2>Activation Failed</h2>
-        <p>Votre compte n'a pas pu être activé, vous pouvez a nouveau recevoir un email de confimration.</p>
-        {% if user_id %}
-            <form action="{% url 'resend_activation_email' user_id=user_id %}" method="post">
-            {% csrf_token %}
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Renvoyer un email de confimration</button>
-            </form>
-        {% endif %}
+<div class="uk-section uk-section-muted uk-flex uk-flex-middle uk-animation-fade" uk-height-viewport>
+    <div class="uk-width-1-1">
+        <div class="uk-container">
+            <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
+                <div class="uk-width-1-1@m">
+                    <div class="uk-margin uk-width-large uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-small">
+                        <h2 class="uk-card-title uk-text-center">Échec de l'activation</h2>
+                        <p class="uk-text-center">Votre compte n'a pas pu être activé, vous pouvez à nouveau recevoir un email de confirmation.</p>
+                        {% if user_id %}
+                            <form action="{% url 'resend_activation_email' user_id=user_id %}" method="post" class="uk-text-center">
+                            {% csrf_token %}
+                            <button class="uk-button uk-button-primary uk-button-large uk-width-1-1@m uk-width-1-1" type="submit">Renvoyer un email de confirmation</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 {% endblock %}
