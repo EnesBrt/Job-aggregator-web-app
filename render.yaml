@@ -10,7 +10,7 @@ services:
     name: job_aggregator
     runtime: python
     buildCommand: "./build.sh"
-    startCommand: "uvicorn job_aggregator.job_aggregator.asgi:application --host 0.0.0.0 --port 10000"
+    startCommand: "uvicorn job_aggregator.asgi:application --host 0.0.0.0 --port 10000"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
