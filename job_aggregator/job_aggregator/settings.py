@@ -82,7 +82,10 @@ from decouple import config
 SECRET_KEY = config("SECRET_KEY")
 
 DATABASES = {
-    "default": {"default": dj_database_url.config(default=config("DATABASE_URL"))}
+    "default": dj_database_url.config(
+        default="postgresql://enesbarut:barut_admin@localhost:5432/job_webapp",
+        conn_max_age=600,
+    )
 }
 
 
