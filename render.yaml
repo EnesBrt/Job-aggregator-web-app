@@ -9,7 +9,7 @@ services:
     plan: free
     name: job_aggregator
     runtime: python
-    buildCommand: "./job_aggregator/build.sh"
+    buildCommand: "./build.sh"
     startCommand: "python -m gunicorn job_aggregator.asgi:application -k uvicorn.workers.UvicornWorker"
     envVars:
       - key: DATABASE_URL
