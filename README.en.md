@@ -1,4 +1,4 @@
-[French version](README.fr.md)
+[French version](README.md)
 
 
 # Job Aggregator Web App
