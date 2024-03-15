@@ -3,7 +3,7 @@
 
 # Job Aggregator Web App
 
-Job Aggregator est une application web qui permet aux utilisateurs de rechercher et de postuler à des offres d'emploi. L'application utilise l'API de Pôle Emploi pour récupérer les offres d'emploi en fonction des mots-clés de recherche de l'utilisateur.
+Job Aggregator est une application web qui permet aux utilisateurs de rechercher et de postuler à des offres d'emploi. L'application utilise l'API de France Travail pour récupérer les offres d'emploi en fonction des mots-clés de recherche de l'utilisateur.
 
 ## Comment utiliser le projet
 
