@@ -6,7 +6,7 @@ set -o errexit
 pip install -r requirements.txt
 
 # Convert static asset files
-python ./job_aggregator/manage.py collectstatic --no-input
+python ./job-aggregator-web-app/manage.py collectstatic --no-input
 
 # Apply any outstanding database migrations
-python ./job_aggregator/manage.py migrate
+python ./job-aggregator-web-app/manage.py migrate
