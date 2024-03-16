@@ -28,7 +28,7 @@ urlpatterns = [
         name="send_email_forgot_password",
     ),
     path(
-        "forgot_password/<str:token>//",
+        "forgot_password/<str:token>/",
         views.reset_forgotten_password,
         name="forgot_password",
     ),  # <str:token> is the token that will be passed to the view function as an argument
