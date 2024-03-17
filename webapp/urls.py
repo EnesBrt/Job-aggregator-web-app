@@ -32,7 +32,11 @@ urlpatterns = [
         views.reset_forgotten_password,
         name="forgot_password",
     ),  # <str:token> is the token that will be passed to the view function as an argument
-    path("forgot_password/", views.reset_forgotten_password, name="forgot_password"),
+    path(
+        "forgot_password/",
+        views.reset_forgotten_password,
+        name="forgot_password_no_token",
+    ),
     path("profile/", views.profile, name="profile"),
     path("settings/", views.settings, name="settings"),
     path("logout_page/", views.logout_page, name="logout_page"),
